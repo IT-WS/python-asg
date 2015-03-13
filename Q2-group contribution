@@ -21,7 +21,8 @@ class LinearSystemSolver:
         for i in range(m):
             C_[i,n]=b[i]
         return C_
-    def bsubs(m,n,C):
+    def bsubs(self,m,n,C):
+        from numpy import zeros,array
         x_=zeros((m),float)
         for i in range(m-1,-1,-1):
             x_[i]=C[i,n]
@@ -29,7 +30,7 @@ class LinearSystemSolver:
                 x_[i]-=C[i,j]*x_[j]
             x_[i]=x_[i]/C[i,i]
         return x_
-    def pivot(m,n,C):
+    def pivot(self,m,n,C):
         for i in range(0,n):
             if C[i,i]==0:
                 for j in range(i+1,m):
@@ -46,7 +47,7 @@ class LinearSystemSolver:
             b=self.matinb(m)
             C=self.concat(m,n,A,b)
             C=self.pivot(m,n,C)
-
+            i=0
             for k in range(i+1,m):
                 r=C[k,i]/C[i,i]
                 if r!=0:
@@ -80,9 +81,12 @@ class LinearSystemSolver:
 
             import numpy as np
             n=int(input('order'))
+            print n
             A=self.matinA(n,n)
             b=self.matinb(n)
-            eps,D,L,U=np.zeros(n),np.zeros(n),np.zeros(n),np.zeros(n)
+            eps,D,L,U=np.zeros((n),int),np.zeros((n),int),np.zeros((n),int),np.zeros((n),int)
+            print D
+            print A
             for i in range(n) :
                 eps[i]=.0000001                  #value for epsilon
             lmt=20                                     #iteration limit
@@ -105,3 +109,7 @@ class LinearSystemSolver:
 
         else:
             return None
+
+           
+
+            
