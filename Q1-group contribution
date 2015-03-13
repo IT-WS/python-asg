@@ -1,0 +1,71 @@
+class LPsolver:
+    def solve(self, p, q, r):
+        C, B, x, maxPos, minPos = [], [], [], [], []
+        for i in r:
+            C += [[j for j in i]]
+        x= [0 for j in range(len(p))]    
+        for i in range(len(q)):
+            C[i] += [0 for i in range(len(q))]
+            C[i][len(p)+i] = 1
+        p += [0 for i in range(len(q))]
+        B = [0 for i in range(len(q))]
+        while True:
+            maxPos, minPos = [], []
+            for i in range(len(p)):
+                sum = 0
+                for j in range(len(q)):
+                    sum += C[j][i]*B[j]
+                maxPos += [p[i]-sum]
+            counter = 0
+            for i in maxPos:
+                if i <= 0:
+                     counter += 1
+            if counter == len(p):
+                 break
+            index1 = maxPos.index(max(maxPos))    
+            for i in range(len(q)):
+                if C[i][index1] != 0:
+                     minPos += [q[i]/C[i][index1]]
+                elif q[i] > 0:
+                    minPos += ["infinity"]
+                else:
+                    minPos += ["-infinity"]
+            counter = 0
+            for i in minPos:
+                if i != "infinity":
+                    if i == "-infinity":
+                        counter += 1
+                    elif i <= 0:
+                        counter += 1
+            if counter == len(q):
+                return "problem is unbounded"
+            z=[]
+            for i in minPos:
+                if i!="infinity" and i!="-infinity":
+                    if i>0:
+                        z += [i]
+            index2 = z.index(min(z))+1
+            counter = 0
+            for i in minPos:
+                if i!="infinity" and i!="-infinity":
+                    if i > 0:
+                        counter += 1
+                if counter == index2:
+                    index2 = minPos.index(i)
+                    break
+            B[index2] = p[index1]            
+            q[index2] = q[index2]/C[index2][index1]
+            run = C[index2][index1]
+            for i in range(len(p)):
+                C[index2][i] = C[index2][i]/run    
+            for i in range(len(q)):
+                if i != index2:
+                    num = C[i][index1]
+                    for j in range(len(p)):
+                        C[i][j] -= num*C[index2][j]
+                    q[i] -= num*q[index2]       
+        sum = 0
+        for i in range(len(q)):
+            sum += B[i]*q[i]
+        return sum    
+            
