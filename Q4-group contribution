@@ -1,0 +1,30 @@
+import numpy.polynomial.polynomial as P
+class Interpolate():
+
+    def solve(self,X,F,method):
+        if method=='lagarange':
+            x=[1]
+            for i in range(len(X)):
+                x=P.polymul(x,[-1*X[i],1])
+            b=[0]
+            for i in range(len(X)):
+                a=P.polydiv(x,[-1*X[i],1])
+                b=P.polyadd(P.polymul((P.polydiv(a[0],P.polyval(X[i],a[0])))[0],[F[i]]),b)
+            return b
+
+        if method=='newton':
+            def ff(i,j):
+                if i==j:
+                    return F[i]
+                else:
+                    return (ff(i+1,j)-ff(i,j-1))/float(X[j]-X[i])
+            sum=[0]
+            for i in range(len(X)):
+                mul=[1]
+                for j in range(i):
+                    mul=P.polymul(mul,[-1*X[j],1])
+                sum=P.polyadd(sum,P.polymul(mul,ff(0,i)))
+            return sum
+
+
+
