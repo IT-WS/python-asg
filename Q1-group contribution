@@ -1,5 +1,8 @@
 class LPsolver:
     def solve(self, p, q, r):
+    #p=objective
+    #q=constraint 1
+    #r=constraint 2
         C, B, x, maxPos, minPos = [], [], [], [], []
         for i in r:
             C += [[j for j in i]]
