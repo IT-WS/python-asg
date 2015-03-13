@@ -1,0 +1,22 @@
+class Integrate:
+	def __init__(self):
+		self.l=[]
+		self.s=0
+		self.k=0
+	def solve(self,a,b,n,f,method):
+		if method=='trapezoid':
+			for i in range(n+1):
+				self.l.append(a+((b-a)*i)/n)
+			for j in range(1,n):
+				self.s=self.s+f(self.l[j])
+			return((b-a)*(f(self.l[0])+f(self.l[n])+2*self.s))/(2*n)
+		elif method=='simpson':
+			for i in range(2*n+1):
+				self.l.append(a+((b-a)*i)/(2*n))
+			for j in range(1,n+1):
+				self.s=self.s+f(self.l[2*j-1])
+			for g in range(2,n+1):
+				self.k=self.k+f(self.l[2*g-2])
+			return((b-a)*(f(self.l[0])+f(self.l[2*n])+4*self.s+2*self.k))/(6*n)
+
+		
