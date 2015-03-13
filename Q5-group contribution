@@ -4,6 +4,7 @@ class Integrate:
 		self.s=0
 		self.k=0
 	def solve(self,a,b,n,f,method):
+	# f,a,b = function defined,lower limit,upper limit
 		if method=='trapezoid':
 			for i in range(n+1):
 				self.l.append(a+((b-a)*i)/n)
