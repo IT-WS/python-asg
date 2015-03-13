@@ -1,0 +1,119 @@
+# Question 3
+import numpy as np
+
+
+class PolynomialSolver:
+
+    # This function returns value of f(x) for an input
+
+    def poly_func(self, deg, coeff_list, x):
+        val_at_x = 0.0
+        for n in range(0, deg + 1):
+            val_at_x += (coeff_list[n] * (x ** n))
+        return val_at_x
+
+    # Main Function
+    '''Input is - 1. Degree of polynomial
+                  2. List of coefficients of polynomial
+                  3. Method Name
+    '''
+    def solve(self, deg, coeff_list, method):
+
+        if method is 'bisection':
+
+            # Taking Input
+
+            low = float(input("Enter lower bound of interval containing root\n"))
+            up = float(input("Enter upper bound of interval containing root\n"))
+            num_of_iter = int(input("Enter number of iterations\n"))
+            tolerance = float(input("Enter tolerance limit\n"))
+            interval_length = abs((low - up))
+
+            # Loop terminates if interval is small or number of iterations exceeds limit
+
+            while (num_of_iter > 0) and (interval_length > min(tolerance, 0.1)):
+                mid = (low + up) / 2.0
+                value_at_low = self.poly_func(deg, coeff_list, low) * self.poly_func(deg, coeff_list, mid)
+
+                # Selecting correct interval
+
+                if value_at_low < 0:
+                    up = mid
+                elif value_at_low > 0:
+                    low = mid
+
+                # If root is among interval end points, return the end points
+
+                elif value_at_low == 0:
+                    if self.poly_func(deg, coeff_list, low) == 0:
+                        return [low - 0.0001, low + 0.0001]
+                    else:
+                        return [mid - 0.0001, mid + 0.0001]
+                num_of_iter -= 1
+            return [low, up]
+
+        elif method is 'secant':
+
+            # Taking Input
+
+            low = float(input("Enter lower bound of interval\n"))
+            up = float(input("Enter upper bound of interval\n"))
+            num_of_iter = int(input("Enter number of iterations\n"))
+            tolerance = float(input("Enter tolerance limit\n"))
+
+            # Loop until value is close to zero or max number of iterations is reached
+
+            while (num_of_iter > 0) and ((abs(self.poly_func(deg, coeff_list, low)) > min(tolerance, 0.1))):
+                val_at_low = self.poly_func(deg, coeff_list, low)
+                val_at_up = self.poly_func(deg, coeff_list, up)
+                low, up = up, up - ((up - low) * val_at_up) / (val_at_up - val_at_low)
+                num_of_iter -= 1
+            return low
+
+        elif method is 'secantrf':
+
+            # Taking Input
+
+            low = float(input("Enter lower bound of interval\n"))
+            up = float(input("Enter upper bound of interval\n"))
+            num_of_iter = int(input("Enter number of iterations\n"))
+            tolerance = float(input("Enter tolerance limit\n"))
+            pt = low
+
+            # Loop until value is close to zero or max number of iterations is reached
+
+            while (num_of_iter > 0) and (abs(self.poly_func(deg, coeff_list, low)) > min(tolerance, 0.1)):
+                val_at_low = self.poly_func(deg, coeff_list, low)
+                val_at_up = self.poly_func(deg, coeff_list, up)
+                pt = up - ((up - low) * val_at_up) / (val_at_up - val_at_low)
+                val_at_pt = self.poly_func(deg, coeff_list, pt)
+                if val_at_low * val_at_pt < 0:
+                    up = pt
+                else:
+                    low = pt
+                num_of_iter -= 1
+            return low
+
+        elif method is 'newtonraphson':
+
+            # Taking Input
+
+            low = float(input("Enter the abscissa\n"))
+            num_of_iter = int(input("Enter number of iterations\n"))
+            tolerance = float(input("Enter tolerance limit\n"))
+
+            # Loop until value is close to zero or max number of iterations is reached
+
+            while (num_of_iter > 0) and (abs(self.poly_func(deg, coeff_list, low)) > min(tolerance, 0.1)):
+
+                # Code to calculate the value of derivative of the polynomial at the point
+
+                coeff_of_der = np.polyder(np.array(coeff_list[::-1]))[::-1]
+                val_of_derivative = float(self.poly_func(deg - 1, coeff_of_der, low))
+
+                low -= float(self.poly_func(deg, coeff_list, low) / val_of_derivative)
+            return low
+
+        # If method name does not match, return None
+        else:
+            return None
